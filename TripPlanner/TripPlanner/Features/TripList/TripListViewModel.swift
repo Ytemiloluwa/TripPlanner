@@ -8,7 +8,8 @@
 import Foundation
 import Combine
 
-class TripListViewModel {
+@MainActor
+class TripListViewModel: ObservableObject {
     
     @Published var trips: [Trip] = []
     @Published var isloading: Bool = false
@@ -25,22 +26,18 @@ class TripListViewModel {
     }
     
     func loadTrips() {
-
+        
         isloading = true
         errorMessage = nil
         
         Task {
             do {
                 let trips = try await tripService.fetchTrips()
-                await MainActor.run {
-                    self.trips = trips
-                    self.isloading = false
-                }
+                self.trips = trips
+                self.isloading = false
             }catch {
-                await MainActor.run {
-                    self.errorMessage = error.localizedDescription
-                    self.isloading = false
-                }
+                self.errorMessage = error.localizedDescription
+                self.isloading = false
             }
         }
     }
@@ -49,13 +46,9 @@ class TripListViewModel {
         Task {
             do {
                 let createdTrip = try await tripService.createTrip(trip)
-                await MainActor.run {
-                    self.trips.append(createdTrip)
-                }
+                self.trips.append(createdTrip)
             }catch {
-                await MainActor.run {
-                    self.errorMessage = error.localizedDescription
-                }
+                self.errorMessage = error.localizedDescription
             }
         }
     }
@@ -67,13 +60,9 @@ class TripListViewModel {
         Task {
             do {
                 try await tripService.deleteTrip(id: trip.id)
-                await MainActor.run {
-                    self.trips.remove(at: index)
-                }
+                self.trips.remove(at: index)
             }catch {
-                await MainActor.run {
-                    self.errorMessage = error.localizedDescription
-                }
+                self.errorMessage = error.localizedDescription
             }
         }
     }
