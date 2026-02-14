@@ -36,4 +36,13 @@ class AppCoordinator {
     func popViewController() {
         navigationController?.popViewController(animated: true)
     }
+
+    func showCitySelection(completion: @escaping (String) -> Void) {
+        let cityVC = CitySelectionViewController()
+        cityVC.onSelect = { city in
+            completion(city)
+        }
+        let nav = UINavigationController(rootViewController: cityVC)
+        navigationController?.topViewController?.present(nav, animated: true)
+    }
 }

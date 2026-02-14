@@ -132,27 +132,37 @@ struct TripListView: View {
     }
     var CardView: some View {
         VStack(spacing: 16) {
-            // City Input
-            HStack(spacing: 12) {
-                Image(systemName: "mappin.circle.fill")
-                    .font(.system(size: 22))
-                    .foregroundColor(.gray)
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Where to?")
-                        .font(.system(size: 12))
-                        .foregroundColor(.gray)
-                    TextField("Select City", text: $selectedCity)
-                        .font(.system(size: 16, weight: .semibold))
+            // City Input (button – presents UIKit city selection)
+            Button(action: {
+                viewModel.openCitySelection { city in
+                    selectedCity = city
                 }
+            }) {
+                HStack(spacing: 12) {
+                    Image("MapPin")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 22, height: 22)
+                        .foregroundColor(.gray)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Where to?")
+                            .font(.system(size: 12))
+                            .foregroundColor(.gray)
+                        Text(selectedCity.isEmpty ? "Select City" : selectedCity)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(selectedCity.isEmpty ? .gray : .primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                .padding()
+                .background(Color.white)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                )
             }
-            .padding()
-            .background(Color.white)
-            .cornerRadius(12)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-            )
+            .buttonStyle(.plain)
             
             // Date Pickers
             HStack(spacing: 12) {

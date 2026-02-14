@@ -66,4 +66,8 @@ class TripListViewModel: ObservableObject {
             }
         }
     }
+
+    func openCitySelection(completion: @escaping (String) -> Void) {
+        coordinator?.showCitySelection(completion: completion)
+    }
 }
