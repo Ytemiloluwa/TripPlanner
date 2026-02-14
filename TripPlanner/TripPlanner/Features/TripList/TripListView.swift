@@ -20,6 +20,7 @@ struct TripListView: View {
     @State private var endDate = Date()
     @State private var showStartDatePicker = false
     @State private var showEndDatePicker = false
+    @State private var showingCreateTripSheet = false
     
     private let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -208,7 +209,7 @@ struct TripListView: View {
                 }
             }
             // Create Trip Button
-            Button(action: submitCreateTripFromCard) {
+            Button(action: { showingCreateTripSheet = true }) {
                 Text("Create a Trip")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
@@ -223,6 +224,9 @@ struct TripListView: View {
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
         .padding(.horizontal)
+        .sheet(isPresented: $showingCreateTripSheet) {
+            CreateTripView(viewModel: viewModel, isPresented: $showingCreateTripSheet)
+        }
         .sheet(isPresented: $showStartDatePicker) {
             DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
                 .datePickerStyle(.graphical)
