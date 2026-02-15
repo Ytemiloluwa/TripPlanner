@@ -52,19 +52,15 @@ class TripListViewModel: ObservableObject {
             }
         }
     }
-    
-    func deleteTrip(at index: Int) {
-        guard index < trips.count else { return }
-        let trip = trips[index]
-        
-        Task {
-            do {
-                try await tripService.deleteTrip(id: trip.id)
-                self.trips.remove(at: index)
-            }catch {
-                self.errorMessage = error.localizedDescription
-            }
-        }
+
+    func createTripAndRefresh(trip: Trip) async throws {
+        isloading = true
+        errorMessage = nil
+        defer { isloading = false }
+
+        _ = try await tripService.createTrip(trip)
+        let trips = try await tripService.fetchTrips()
+        self.trips = trips
     }
 
     func openCitySelection(completion: @escaping (String) -> Void) {

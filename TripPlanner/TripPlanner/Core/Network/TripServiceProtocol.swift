@@ -10,7 +10,4 @@ import Foundation
 protocol TripServiceProtocol {
     func fetchTrips() async throws -> [Trip]
     func createTrip(_ trip: Trip) async throws -> Trip
-    func updateTrip(_ trip: Trip) async throws -> Trip
-    func deleteTrip(id: String) async throws
-    func fetchFlights(for destination: String?) async throws -> [Flight]
 }

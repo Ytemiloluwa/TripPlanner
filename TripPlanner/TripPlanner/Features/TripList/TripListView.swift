@@ -179,7 +179,7 @@ struct TripListView: View {
                             Text("Start Date")
                                 .font(.system(size: 12))
                                 .foregroundColor(.gray)
-                            Text("Enter a date")
+                            Text(dateFormatter.string(from: startDate))
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundColor(.gray)
                         }
@@ -210,7 +210,7 @@ struct TripListView: View {
                             Text("End Date")
                                 .font(.system(size: 12))
                                 .foregroundColor(.gray)
-                            Text("Enter a date")
+                            Text(dateFormatter.string(from: endDate))
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundColor(.gray)
                         }
@@ -243,7 +243,13 @@ struct TripListView: View {
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
         .padding(.horizontal)
         .sheet(isPresented: $showingCreateTripSheet) {
-            CreateTripView(viewModel: viewModel, isPresented: $showingCreateTripSheet)
+            CreateTripView(
+                viewModel: viewModel,
+                isPresented: $showingCreateTripSheet,
+                selectedCity: $selectedCity,
+                startDate: $startDate,
+                endDate: $endDate
+            )
         }
     }
     
@@ -255,11 +261,7 @@ struct TripListView: View {
             name: city,
             destination: city,
             startDate: startDate,
-            endDate: endDate,
-            activities: [],
-            hotels: [],
-            flights: [],
-            imageURL: nil
+            endDate: endDate
         )
         viewModel.createTrip(trip: trip)
         selectedCity = ""
@@ -273,11 +275,7 @@ struct TripListView: View {
             name: newTripName,
             destination: newTripDestination,
             startDate: start,
-            endDate: end,
-            activities: [],
-            hotels: [],
-            flights: [],
-            imageURL: nil
+            endDate: end
         )
         viewModel.createTrip(trip: trip)
         showingCreateTrip = false
@@ -293,7 +291,7 @@ struct TripCard: View {
         VStack(alignment: .leading, spacing: 0) {
             // Image
             ZStack(alignment: .topTrailing) {
-                Image("OBJECTS") 
+                Image("Rectangle 3448") 
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(height: 200)

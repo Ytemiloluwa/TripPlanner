@@ -53,11 +53,29 @@ struct StyleRow: View {
 struct CreateTripView: View {
     @ObservedObject var viewModel: TripListViewModel
     @Binding var isPresented: Bool
+    @Binding var selectedCity: String
+    @Binding var startDate: Date
+    @Binding var endDate: Date
 
     @State private var tripName: String = ""
     @State private var tripDescription: String = ""
     @State private var showStylePicker = false
     @State private var selectedStyle: TravelStyle? = .solo
+    @State private var isSubmitting = false
+    @State private var submitErrorMessage: String?
+    @State private var showSubmitError = false
+    @FocusState private var focusedField: FocusedField?
+
+    private enum FocusedField {
+        case tripName
+        case tripDescription
+    }
+
+    private var isFormValid: Bool {
+        let nameOk = !tripName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        let destinationOk = !selectedCity.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        return nameOk && destinationOk && !isSubmitting
+    }
 
     var body: some View {
         ZStack {
@@ -100,6 +118,9 @@ struct CreateTripView: View {
                         .font(.subheadline.weight(.medium))
 
                     TextField("Enter the trip name", text: $tripName)
+                        .focused($focusedField, equals: .tripName)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
                         .padding()
                         .background(
                             RoundedRectangle(cornerRadius: 10)
@@ -170,6 +191,7 @@ struct CreateTripView: View {
                                 .padding(.vertical, 8)
                         }
                         TextEditor(text: $tripDescription)
+                            .focused($focusedField, equals: .tripDescription)
                             .frame(minHeight: 88)
                             .padding(4)
                             .scrollContentBackground(.hidden)
@@ -185,21 +207,22 @@ struct CreateTripView: View {
                 Spacer(minLength: 10)
 
                 // Next button
-                Button(action: submitAndDismiss) {
-                    Text("Next")
+                Button(action: submitTapped) {
+                    Group {
+                        if isSubmitting {
+                            ProgressView()
+                                .tint(.white.opacity(0.9))
+                        } else {
+                            Text("Next")
+                        }
+                    }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(
-                            LinearGradient(
-                                colors: [Color.blue.opacity(0.4), Color.blue.opacity(0.25)],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .foregroundColor(.white.opacity(0.8))
+                    .background(isFormValid ? Color.blue : Color.gray.opacity(0.35))
+                    .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-                .disabled(tripName.trimmingCharacters(in: .whitespaces).isEmpty)
+                .disabled(!isFormValid)
                 }
                 .padding(22)
                 .padding(.bottom, 32)
@@ -212,26 +235,57 @@ struct CreateTripView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea(edges: .bottom)
+        .contentShape(Rectangle())
+        .onTapGesture { focusedField = nil }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { focusedField = nil }
+            }
+        }
+        .alert("Something went wrong", isPresented: $showSubmitError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(submitErrorMessage ?? "Please try again.")
+        }
     }
 
-    private func submitAndDismiss() {
+    private func submitTapped() {
+        focusedField = nil
         let name = tripName.trimmingCharacters(in: .whitespaces)
         guard !name.isEmpty else { return }
-        let startDate = Date()
-        let endDate = Calendar.current.date(byAdding: .day, value: 7, to: startDate) ?? startDate
+        let destination = selectedCity.trimmingCharacters(in: .whitespaces)
+        guard !destination.isEmpty else {
+            submitErrorMessage = "Please select a city."
+            showSubmitError = true
+            return
+        }
+        guard !isSubmitting else { return }
+        isSubmitting = true
+        let start = startDate
+        let end = max(endDate, start)
         let trip = Trip(
             id: UUID().uuidString,
             name: name,
-            destination: name,
-            startDate: startDate,
-            endDate: endDate,
-            activities: [],
-            hotels: [],
-            flights: [],
-            imageURL: nil
+            destination: destination,
+            startDate: start,
+            endDate: end
         )
-        viewModel.createTrip(trip: trip)
-        isPresented = false
+        Task {
+            do {
+                try await viewModel.createTripAndRefresh(trip: trip)
+                await MainActor.run {
+                    isSubmitting = false
+                    isPresented = false
+                }
+            } catch {
+                await MainActor.run {
+                    isSubmitting = false
+                    submitErrorMessage = error.localizedDescription
+                    showSubmitError = true
+                }
+            }
+        }
     }
 }
 
@@ -239,6 +293,9 @@ struct CreateTripView: View {
 #Preview {
     CreateTripView(
         viewModel: TripListViewModel(tripService: TripService(), coordinator: nil),
-        isPresented: .constant(true)
+        isPresented: .constant(true),
+        selectedCity: .constant("Doha, Qatar"),
+        startDate: .constant(Date()),
+        endDate: .constant(Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date())
     )
 }
