@@ -12,6 +12,7 @@ import Combine
 struct TripListView: View {
     
     @ObservedObject var viewModel: TripListViewModel
+    @Environment(\.colorScheme) private var colorScheme
     @State private var showingCreateTrip = false
     @State private var newTripName = ""
     @State private var newTripDestination = ""
@@ -26,57 +27,69 @@ struct TripListView: View {
         return f
     }()
     
-    var plan: some View {
-        
-        HStack {
+    private var topBar: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "arrow.left")
+                .font(.system(size: 18, weight: .medium))
+                .foregroundColor(.primary)
             Text("Plan a Trip")
-                .font(.system(size: 17, weight: .bold))
-            
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.primary)
             Spacer()
-            
-        }.padding()
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 14)
+        .background(Color(.systemBackground))
+    }
+
+    private var planHeroSection: some View {
+        ZStack(alignment: .top) {
+            (colorScheme == .dark ? Color(.secondarySystemBackground) : Color("bgColor"))
+                .frame(height: 480)
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Plan Your Dream Trip in Minutes")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.primary)
+                Text("Build, personalize, and optimize your itineraries with our trip planner. Perfect for getaways, remote workcations, and any spontaneous escapade.")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.secondary)
+                    .lineSpacing(4)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 20)
+            .padding(.top, 36)
+
+            VStack(spacing: 0) {
+                Spacer(minLength: 150)
+                Image("hotel")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                   // .padding(.leading, 20)
+                Image("Group 229211")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 0)
+                    .clipped()
+            }
+            .frame(height: 480, alignment: .bottom)
+
+            CardView
+                .padding(.horizontal, 20)
+                .padding(.top, 260)
+        }
+        .padding(.bottom, 24)
     }
     
     var body: some View {
         
         ScrollView {
             
-            VStack(spacing: 5){
-                
-                plan
-                
-                Color("bgColor")
-                    .ignoresSafeArea()
-            
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Plan Your Dream Trip in Minutes")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(Color(white: 0.2))
-                    Text("Build, personalize, and optimize your itineraries with our trip planner. Perfect for getaways, remote workcations, and any spontaneous escapade.")
-                        .font(.system(size: 14))
-                        .foregroundColor(.gray)
-                }
-                .padding()
-                
-                ZStack(alignment: .bottom) {
-                    VStack(spacing: 0) {
-                        HStack {
-                            Image("hotel")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: .infinity)
-
-                        }
-                        .frame(maxWidth: .infinity)
-                        Image("Group 229211")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: .infinity)
-                    }
-                    CardView
-                        .offset(y: 60)
-                }
-                .padding(.bottom, 80)
+            VStack(spacing: 0){
+                topBar
+                planHeroSection
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Your Trips")
@@ -90,13 +103,13 @@ struct TripListView: View {
                 HStack {
                     Text("Planned Trips")
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                     Spacer()
                     Image(systemName: "chevron.down")
                         .foregroundColor(.gray)
                 }
                 .padding()
-                .background(Color.white)
+                .background(Color(.systemBackground))
                 .cornerRadius(8)
                 .padding(.horizontal, 24)
                 .padding(.bottom, 24)
@@ -124,6 +137,7 @@ struct TripListView: View {
                 }
             }
         }
+        .background(Color(.systemGroupedBackground))
         .onAppear {
             viewModel.loadTrips()
         }
@@ -153,11 +167,11 @@ struct TripListView: View {
                     }
                 }
                 .padding()
-                .background(Color.white)
+                .background(Color(.systemBackground))
                 .cornerRadius(12)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                        .stroke(Color(.separator), lineWidth: 1)
                 )
             }
             .buttonStyle(.plain)
@@ -181,16 +195,16 @@ struct TripListView: View {
                                 .foregroundColor(.gray)
                             Text(dateFormatter.string(from: startDate))
                                 .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(.gray)
+                                .foregroundColor(.primary)
                         }
                         Spacer()
                     }
                     .padding()
-                    .background(Color.white)
+                    .background(Color(.systemBackground))
                     .cornerRadius(12)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                            .stroke(Color(.separator), lineWidth: 1)
                     )
                 }
                 .buttonStyle(.plain)
@@ -212,16 +226,16 @@ struct TripListView: View {
                                 .foregroundColor(.gray)
                             Text(dateFormatter.string(from: endDate))
                                 .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(.gray)
+                                .foregroundColor(.primary)
                         }
                         Spacer()
                     }
                     .padding()
-                    .background(Color.white)
+                    .background(Color(.systemBackground))
                     .cornerRadius(12)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                            .stroke(Color(.separator), lineWidth: 1)
                     )
                 }
                 .buttonStyle(.plain)
@@ -238,10 +252,9 @@ struct TripListView: View {
             }
         }
         .padding(20)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(16)
-        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-        .padding(.horizontal)
+        .shadow(color: .black.opacity(colorScheme == .dark ? 0.25 : 0.1), radius: 10, x: 0, y: 5)
         .sheet(isPresented: $showingCreateTripSheet) {
             CreateTripView(
                 viewModel: viewModel,
@@ -324,10 +337,7 @@ struct TripCard: View {
                         .foregroundColor(.gray)
                 }
                 
-                Button(action: {
-                  
-                    
-                }) {
+                NavigationLink(destination: TripDetailsView(trip: trip)) {
                     Text("View")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.white)
@@ -336,6 +346,7 @@ struct TripCard: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                 }
+                .buttonStyle(.plain)
                 .padding(.top, 8)
             }
             .padding(16)
