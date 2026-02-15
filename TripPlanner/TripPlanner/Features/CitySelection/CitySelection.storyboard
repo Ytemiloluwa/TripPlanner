@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="u0I-Z6-Vb2">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="o4b-2T-1rH">
+            <objects>
+                <navigationController id="u0I-Z6-Vb2" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="P72-2g-4zT">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="o7X-kG-i5w" kind="relationship" relationship="rootViewController" id="t3d-2K-1pK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8mB-6S-L2p" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-64" y="78"/>
+        </scene>
+
+        <!--City Selection View Controller-->
+        <scene sceneID="2Qj-yc-y9h">
+            <objects>
+                <viewController id="o7X-kG-i5w" customClass="CitySelectionViewController" customModule="TripPlanner" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" title="Where" id="Qv4-0x-yYB">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="csu-eF-0n4">
+                            <connections>
+                                <action selector="closeTapped:" destination="o7X-kG-i5w" id="Orn-aQ-bcz"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <view key="view" contentMode="scaleToFill" id="3dO-Kj-fbF">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Please select a city" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q0c-4u-5Rr">
+                                <rect key="frame" x="20" y="115" width="353" height="17"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" white="0.5568627451" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="left" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Select City" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="B9H-qS-s4m">
+                                <rect key="frame" x="20" y="144" width="353" height="48"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <connections>
+                                    <action selector="searchDidChange:" destination="o7X-kG-i5w" eventType="editingChanged" id="c3j-Nm-wqZ"/>
+                                </connections>
+                            </textField>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="singleLine" translatesAutoresizingMaskIntoConstraints="NO" id="eUQ-8q-e4u">
+                                <rect key="frame" x="0.0" y="208" width="393" height="610"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="wGf-0T-dwL"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="q0c-4u-5Rr" firstAttribute="top" secondItem="wGf-0T-dwL" secondAttribute="top" constant="16" id="0gO-0J-0cB"/>
+                            <constraint firstItem="q0c-4u-5Rr" firstAttribute="leading" secondItem="3dO-Kj-fbF" secondAttribute="leading" constant="20" id="3zR-Zb-y5n"/>
+                            <constraint firstAttribute="trailing" secondItem="q0c-4u-5Rr" secondAttribute="trailing" constant="20" id="BBb-nA-rWi"/>
+                            <constraint firstItem="B9H-qS-s4m" firstAttribute="top" secondItem="q0c-4u-5Rr" secondAttribute="bottom" constant="12" id="Iqj-Bw-KeF"/>
+                            <constraint firstItem="B9H-qS-s4m" firstAttribute="leading" secondItem="3dO-Kj-fbF" secondAttribute="leading" constant="20" id="N6Q-2P-Sj0"/>
+                            <constraint firstAttribute="trailing" secondItem="B9H-qS-s4m" secondAttribute="trailing" constant="20" id="Q2Y-vQ-ZjE"/>
+                            <constraint firstItem="B9H-qS-s4m" firstAttribute="height" constant="48" id="d2h-KS-qbY"/>
+                            <constraint firstItem="eUQ-8q-e4u" firstAttribute="top" secondItem="B9H-qS-s4m" secondAttribute="bottom" constant="16" id="foq-Qy-jVj"/>
+                            <constraint firstItem="eUQ-8q-e4u" firstAttribute="leading" secondItem="3dO-Kj-fbF" secondAttribute="leading" id="kXq-ll-C9H"/>
+                            <constraint firstAttribute="trailing" secondItem="eUQ-8q-e4u" secondAttribute="trailing" id="pWg-zX-AoY"/>
+                            <constraint firstItem="wGf-0T-dwL" firstAttribute="bottom" secondItem="eUQ-8q-e4u" secondAttribute="bottom" id="wWq-Gg-wkc"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="instructionLabel" destination="q0c-4u-5Rr" id="HnZ-6S-KkK"/>
+                        <outlet property="searchField" destination="B9H-qS-s4m" id="jZK-Lv-aDA"/>
+                        <outlet property="tableView" destination="eUQ-8q-e4u" id="uEM-rh-1sW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aoI-2m-wRk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="608" y="78"/>
+        </scene>
+    </scenes>
+</document>

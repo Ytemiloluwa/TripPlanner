@@ -16,48 +16,16 @@ struct CityOption {
 final class CitySelectionViewController: UIViewController {
 
     var onSelect: ((String) -> Void)?
-
-    private let instructionLabel: UILabel = {
-        let l = UILabel()
-        l.text = "Please select a city"
-        l.font = .systemFont(ofSize: 14)
-        l.textColor = .systemGray
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
-    }()
-
-    private let searchField: UITextField = {
-        let t = UITextField()
-        t.placeholder = "Select City"
-        t.font = .systemFont(ofSize: 16)
-        t.borderStyle = .none
-        t.backgroundColor = .white
-        t.layer.cornerRadius = 10
-        t.layer.borderWidth = 1
-        t.layer.borderColor = UIColor.systemBlue.cgColor
-        t.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
-        t.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
-        t.leftViewMode = .always
-        t.rightViewMode = .always
-        t.translatesAutoresizingMaskIntoConstraints = false
-        return t
-    }()
-
-    private let tableView: UITableView = {
-        let t = UITableView(frame: .zero, style: .plain)
-        t.translatesAutoresizingMaskIntoConstraints = false
-        t.rowHeight = UITableView.automaticDimension
-        t.estimatedRowHeight = 64
-        t.separatorColor = .separator
-        return t
-    }()
+    
+    @IBOutlet private weak var instructionLabel: UILabel!
+    @IBOutlet private weak var searchField: UITextField!
+    @IBOutlet private weak var tableView: UITableView!
 
     private var allCities: [CityOption] = [
         CityOption(title: "Laghouat Algeria", subtitle: "Laghouat", countryCode: "AG"),
         CityOption(title: "Lagos, Nigeria", subtitle: "Muritala Muhammed", countryCode: "NG"),
         CityOption(title: "Doha, Qatar", subtitle: "Doha", countryCode: "QA"),
         CityOption(title: "Lagos, Nigeria", subtitle: "Murtala Mohammed International", countryCode: "NG"),
-        CityOption(title: "Lahore, Pakistan", subtitle: "Lahore", countryCode: "PK"),
         CityOption(title: "Lagos, Nigeria", subtitle: "Larnaca", countryCode: "NG"),
     ]
     private var filteredCities: [CityOption] = []
@@ -67,11 +35,13 @@ final class CitySelectionViewController: UIViewController {
         view.backgroundColor = .systemBackground
         filteredCities = allCities
         setupNavigationBar()
-        setupLayout()
+        configureUI()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CityCell.self, forCellReuseIdentifier: CityCell.reuseId)
-        searchField.addTarget(self, action: #selector(searchDidChange), for: .editingChanged)
+        tableView.separatorColor = .separator
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 64
     }
 
     private func setupNavigationBar() {
@@ -80,46 +50,30 @@ final class CitySelectionViewController: UIViewController {
             .font: UIFont.systemFont(ofSize: 20, weight: .semibold),
             .foregroundColor: UIColor.label
         ]
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "xmark"),
-            style: .plain,
-            target: self,
-            action: #selector(closeTapped)
-        )
     }
 
-    private func setupLayout() {
-        view.addSubview(instructionLabel)
-        view.addSubview(searchField)
-        view.addSubview(tableView)
-
-        NSLayoutConstraint.activate([
-            instructionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            instructionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            instructionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-
-            searchField.topAnchor.constraint(equalTo: instructionLabel.bottomAnchor, constant: 12),
-            searchField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            searchField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            searchField.heightAnchor.constraint(equalToConstant: 48),
-
-            tableView.topAnchor.constraint(equalTo: searchField.bottomAnchor, constant: 16),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        ])
+    private func configureUI() {
+        searchField.borderStyle = .none
+        searchField.backgroundColor = .white
+        searchField.layer.cornerRadius = 10
+        searchField.layer.borderWidth = 1
+        searchField.layer.borderColor = UIColor.systemBlue.cgColor
+        searchField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
+        searchField.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
+        searchField.leftViewMode = .always
+        searchField.rightViewMode = .always
     }
 
-    @objc private func closeTapped() {
-        if presentingViewController != nil {
-            dismiss(animated: true)
+    @IBAction private func closeTapped(_ sender: Any) {
+        if let nav = navigationController, nav.presentingViewController != nil {
+            nav.dismiss(animated: true)
         } else {
             navigationController?.popViewController(animated: true)
         }
     }
 
-    @objc private func searchDidChange() {
-        let query = (searchField.text ?? "").trimmingCharacters(in: .whitespaces).lowercased()
+    @IBAction private func searchDidChange(_ sender: UITextField) {
+        let query = (sender.text ?? "").trimmingCharacters(in: .whitespaces).lowercased()
         if query.isEmpty {
             filteredCities = allCities
         } else {
@@ -149,8 +103,8 @@ extension CitySelectionViewController: UITableViewDelegate, UITableViewDataSourc
         tableView.deselectRow(at: indexPath, animated: true)
         let city = filteredCities[indexPath.row]
         onSelect?(city.title)
-        if presentingViewController != nil {
-            dismiss(animated: true)
+        if let nav = navigationController, nav.presentingViewController != nil {
+            nav.dismiss(animated: true)
         } else {
             navigationController?.popViewController(animated: true)
         }
@@ -200,9 +154,24 @@ final class CityCell: UITableViewCell {
         let v = UIView()
         v.backgroundColor = .systemGray5
         v.layer.cornerRadius = 4
+        v.clipsToBounds = true
         v.translatesAutoresizingMaskIntoConstraints = false
         return v
     }()
+
+    private let flagImageView: UIImageView = {
+        let v = UIImageView()
+        v.contentMode = .scaleAspectFill
+        v.clipsToBounds = true
+        v.translatesAutoresizingMaskIntoConstraints = false
+        return v
+    }()
+
+    private static let flagAssetNames: [String: String] = [
+        "AG": "algeria",
+        "NG": "nigeria",
+        "QA": "qatar",
+    ]
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -218,6 +187,7 @@ final class CityCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(subtitleLabel)
         contentView.addSubview(flagContainer)
+        flagContainer.addSubview(flagImageView)
         contentView.addSubview(countryCodeLabel)
 
         NSLayoutConstraint.activate([
@@ -240,6 +210,11 @@ final class CityCell: UITableViewCell {
             flagContainer.widthAnchor.constraint(equalToConstant: 28),
             flagContainer.heightAnchor.constraint(equalToConstant: 20),
 
+            flagImageView.topAnchor.constraint(equalTo: flagContainer.topAnchor),
+            flagImageView.leadingAnchor.constraint(equalTo: flagContainer.leadingAnchor),
+            flagImageView.trailingAnchor.constraint(equalTo: flagContainer.trailingAnchor),
+            flagImageView.bottomAnchor.constraint(equalTo: flagContainer.bottomAnchor),
+
             countryCodeLabel.topAnchor.constraint(equalTo: flagContainer.bottomAnchor, constant: 4),
             countryCodeLabel.centerXAnchor.constraint(equalTo: flagContainer.centerXAnchor),
             countryCodeLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -8),
@@ -250,5 +225,7 @@ final class CityCell: UITableViewCell {
         titleLabel.text = title
         subtitleLabel.text = subtitle
         countryCodeLabel.text = countryCode
+        let assetName = Self.flagAssetNames[countryCode.uppercased()]
+        flagImageView.image = assetName.flatMap { UIImage(named: $0) }
     }
 }

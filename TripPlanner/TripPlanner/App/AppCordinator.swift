@@ -38,11 +38,16 @@ class AppCoordinator {
     }
 
     func showCitySelection(completion: @escaping (String) -> Void) {
-        let cityVC = CitySelectionViewController()
+        let storyboard = UIStoryboard(name: "CitySelection", bundle: .main)
+        guard
+            let nav = storyboard.instantiateInitialViewController() as? UINavigationController,
+            let cityVC = nav.viewControllers.first as? CitySelectionViewController
+        else { return }
+
         cityVC.onSelect = { city in
             completion(city)
         }
-        let nav = UINavigationController(rootViewController: cityVC)
+
         navigationController?.topViewController?.present(nav, animated: true)
     }
 
