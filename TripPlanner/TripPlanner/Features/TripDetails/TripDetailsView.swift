@@ -31,12 +31,20 @@ struct TripDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
+    private var isSmallScreen: Bool {
+        UIScreen.main.bounds.height < 700
+    }
+    
+    private var heroHeight: CGFloat {
+        isSmallScreen ? 150 : 180
+    }
+
     private var heroSection: some View {
         ZStack(alignment: .topTrailing) {
             Image("Rectangle 3448")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
-                .frame(height: 180)
+                .frame(height: heroHeight)
                 .clipped()
         }
         .frame(maxWidth: .infinity)

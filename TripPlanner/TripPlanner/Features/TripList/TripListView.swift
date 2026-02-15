@@ -37,15 +37,31 @@ struct TripListView: View {
                 .foregroundColor(.primary)
             Spacer()
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 24)
         .padding(.vertical, 14)
         .background(Color(.systemBackground))
+    }
+
+    private var isSmallScreen: Bool {
+        UIScreen.main.bounds.height < 700
+    }
+    
+    private var heroHeight: CGFloat {
+        isSmallScreen ? 400 : 480
+    }
+    
+    private var cardTopPadding: CGFloat {
+        isSmallScreen ? 200 : 260
+    }
+    
+    private var spacerMinLength: CGFloat {
+        isSmallScreen ? 100 : 150
     }
 
     private var planHeroSection: some View {
         ZStack(alignment: .top) {
             (colorScheme == .dark ? Color(.secondarySystemBackground) : Color("bgColor"))
-                .frame(height: 480)
+                .frame(height: heroHeight)
 
             VStack(alignment: .leading, spacing: 12) {
                 Text("Plan Your Dream Trip in Minutes")
@@ -57,16 +73,16 @@ struct TripListView: View {
                     .lineSpacing(4)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 24)
             .padding(.top, 36)
 
             VStack(spacing: 0) {
-                Spacer(minLength: 150)
+                Spacer(minLength: spacerMinLength)
                 Image("hotel")
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                   // .padding(.leading, 20)
+                    .padding(.leading, 24)
                 Image("Group 229211")
                     .resizable()
                     .scaledToFill()
@@ -74,11 +90,11 @@ struct TripListView: View {
                     .frame(minHeight: 0)
                     .clipped()
             }
-            .frame(height: 480, alignment: .bottom)
+            .frame(height: heroHeight, alignment: .bottom)
 
             CardView
-                .padding(.horizontal, 20)
-                .padding(.top, 260)
+                .padding(.horizontal, 24)
+                .padding(.top, cardTopPadding)
         }
         .padding(.bottom, 24)
     }

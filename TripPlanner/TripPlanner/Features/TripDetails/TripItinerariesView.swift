@@ -137,7 +137,7 @@ private struct EmptyItineraryCard: View {
             Image(kind.emptyIllustration)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 118, height: 118)
+                .frame(width: UIScreen.main.bounds.height < 700 ? 100 : 118, height: UIScreen.main.bounds.height < 700 ? 100 : 118)
                 .padding(.top, 6)
 
             Text("No request yet")
@@ -376,11 +376,12 @@ private func detailsActions(_ items: [String]) -> some View {
 }
 
 private func detailImage(name: String) -> some View {
-    ZStack(alignment: .bottom) {
+    let isSmallScreen = UIScreen.main.bounds.height < 700
+    return ZStack(alignment: .bottom) {
         Image(name)
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .frame(height: 126)
+            .frame(height: isSmallScreen ? 100 : 126)
             .frame(maxWidth: .infinity)
             .clipped()
             .cornerRadius(3)
@@ -389,11 +390,11 @@ private func detailImage(name: String) -> some View {
             Image("CaretCircleRight")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 29, height: 29)
+                .frame(width: isSmallScreen ? 24 : 29, height: isSmallScreen ? 24 : 29)
             Image("CaretCircleRight-1")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 29, height: 29)
+                .frame(width: isSmallScreen ? 24 : 29, height: isSmallScreen ? 24 : 29)
         }
         .padding(.bottom, 8)
     }
