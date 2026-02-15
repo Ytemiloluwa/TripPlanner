@@ -45,4 +45,16 @@ class AppCoordinator {
         let nav = UINavigationController(rootViewController: cityVC)
         navigationController?.topViewController?.present(nav, animated: true)
     }
+
+    func showDateSelection(start: Date, end: Date, completion: @escaping (Date, Date) -> Void) {
+        let vc = DateSelectionViewController()
+        vc.initialStartDate = start
+        vc.initialEndDate = end
+        vc.onChoose = { newStart, newEnd in
+            completion(newStart, newEnd)
+        }
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+        navigationController?.topViewController?.present(nav, animated: true)
+    }
 }

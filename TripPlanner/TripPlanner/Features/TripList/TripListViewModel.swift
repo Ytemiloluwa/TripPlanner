@@ -70,4 +70,8 @@ class TripListViewModel: ObservableObject {
     func openCitySelection(completion: @escaping (String) -> Void) {
         coordinator?.showCitySelection(completion: completion)
     }
+
+    func openDateSelection(start: Date, end: Date, completion: @escaping (Date, Date) -> Void) {
+        coordinator?.showDateSelection(start: start, end: end, completion: completion)
+    }
 }

@@ -53,12 +53,12 @@ final class CitySelectionViewController: UIViewController {
     }()
 
     private var allCities: [CityOption] = [
-        CityOption(title: "Laghouat Algeria", subtitle: "Laghouat", countryCode: "DZ"),
+        CityOption(title: "Laghouat Algeria", subtitle: "Laghouat", countryCode: "AG"),
         CityOption(title: "Lagos, Nigeria", subtitle: "Muritala Muhammed", countryCode: "NG"),
         CityOption(title: "Doha, Qatar", subtitle: "Doha", countryCode: "QA"),
         CityOption(title: "Lagos, Nigeria", subtitle: "Murtala Mohammed International", countryCode: "NG"),
         CityOption(title: "Lahore, Pakistan", subtitle: "Lahore", countryCode: "PK"),
-        CityOption(title: "Larnaca, Cyprus", subtitle: "Larnaca", countryCode: "CY"),
+        CityOption(title: "Lagos, Nigeria", subtitle: "Larnaca", countryCode: "NG"),
     ]
     private var filteredCities: [CityOption] = []
 

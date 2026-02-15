@@ -18,8 +18,6 @@ struct TripListView: View {
     @State private var selectedCity = ""
     @State private var startDate = Date()
     @State private var endDate = Date()
-    @State private var showStartDatePicker = false
-    @State private var showEndDatePicker = false
     @State private var showingCreateTripSheet = false
     
     private let dateFormatter: DateFormatter = {
@@ -167,12 +165,16 @@ struct TripListView: View {
             // Date Pickers
             HStack(spacing: 12) {
                 // Start Date
-                Button(action: { showStartDatePicker = true }) {
+                Button(action: {
+                    viewModel.openDateSelection(start: startDate, end: endDate) { newStart, newEnd in
+                        startDate = newStart
+                        endDate = newEnd
+                    }
+                }) {
                     HStack(spacing: 12) {
                         Image(systemName: "calendar")
                             .font(.system(size: 20))
                             .foregroundColor(.gray)
-                        
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Start Date")
                                 .font(.system(size: 12))
@@ -191,14 +193,19 @@ struct TripListView: View {
                             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                     )
                 }
-                
+                .buttonStyle(.plain)
+
                 // End Date
-                Button(action: { showEndDatePicker = true }) {
+                Button(action: {
+                    viewModel.openDateSelection(start: startDate, end: endDate) { newStart, newEnd in
+                        startDate = newStart
+                        endDate = newEnd
+                    }
+                }) {
                     HStack(spacing: 12) {
                         Image(systemName: "calendar")
                             .font(.system(size: 20))
                             .foregroundColor(.gray)
-                        
                         VStack(alignment: .leading, spacing: 4) {
                             Text("End Date")
                                 .font(.system(size: 12))
@@ -217,6 +224,7 @@ struct TripListView: View {
                             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                     )
                 }
+                .buttonStyle(.plain)
             }
             // Create Trip Button
             Button(action: { showingCreateTripSheet = true }) {
@@ -236,16 +244,6 @@ struct TripListView: View {
         .padding(.horizontal)
         .sheet(isPresented: $showingCreateTripSheet) {
             CreateTripView(viewModel: viewModel, isPresented: $showingCreateTripSheet)
-        }
-        .sheet(isPresented: $showStartDatePicker) {
-            DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                .datePickerStyle(.graphical)
-                .presentationDetents([.medium])
-        }
-        .sheet(isPresented: $showEndDatePicker) {
-            DatePicker("End Date", selection: $endDate, displayedComponents: .date)
-                .datePickerStyle(.graphical)
-                .presentationDetents([.medium])
         }
     }
     
